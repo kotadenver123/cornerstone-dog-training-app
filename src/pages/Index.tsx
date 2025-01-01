@@ -3,45 +3,53 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { ImagePlus, Send } from "lucide-react";
+import { Video, Send } from "lucide-react";
 import { useState } from "react";
 
 const Index = () => {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
   const [description, setDescription] = useState("");
   const { toast } = useToast();
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 100 * 1024 * 1024) { // 100MB limit for videos
         toast({
           title: "File too large",
-          description: "Please select an image under 5MB",
+          description: "Please select a video under 100MB",
           variant: "destructive",
         });
         return;
       }
-      setSelectedImage(file);
+      if (!file.type.startsWith('video/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select a video file",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSelectedVideo(file);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedImage) {
+    if (!selectedVideo) {
       toast({
-        title: "No image selected",
-        description: "Please select an image to upload",
+        title: "No video selected",
+        description: "Please select a video to upload",
         variant: "destructive",
       });
       return;
     }
-    // Here you would typically upload the image and description to your backend
+    // Here you would typically upload the video and description to your backend
     toast({
       title: "Success!",
       description: "Your training session has been submitted for review",
     });
-    setSelectedImage(null);
+    setSelectedVideo(null);
     setDescription("");
   };
 
@@ -56,38 +64,38 @@ const Index = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <label
-                  htmlFor="image-upload"
+                  htmlFor="video-upload"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Upload Training Photo
+                  Upload Training Video
                 </label>
                 <div className="flex items-center justify-center w-full">
                   <label
-                    htmlFor="image-upload"
+                    htmlFor="video-upload"
                     className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <ImagePlus className="w-12 h-12 mb-4 text-gray-400" />
+                      <Video className="w-12 h-12 mb-4 text-gray-400" />
                       <p className="mb-2 text-sm text-gray-500">
                         <span className="font-semibold">Click to upload</span> or
                         drag and drop
                       </p>
                       <p className="text-xs text-gray-500">
-                        PNG, JPG or GIF (MAX. 5MB)
+                        MP4, MOV or WebM (MAX. 100MB)
                       </p>
                     </div>
                     <Input
-                      id="image-upload"
+                      id="video-upload"
                       type="file"
                       className="hidden"
-                      accept="image/*"
-                      onChange={handleImageChange}
+                      accept="video/*"
+                      onChange={handleVideoChange}
                     />
                   </label>
                 </div>
-                {selectedImage && (
+                {selectedVideo && (
                   <p className="text-sm text-green-600">
-                    Selected: {selectedImage.name}
+                    Selected: {selectedVideo.name}
                   </p>
                 )}
               </div>
