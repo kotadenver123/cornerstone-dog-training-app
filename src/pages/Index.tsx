@@ -5,22 +5,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Video, Send } from "lucide-react";
 import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TrainingSessionsTable } from "@/components/training/TrainingSessionsTable";
 
-// Mock data type for training sessions
 type TrainingSession = {
   id: string;
   date: string;
   description: string;
   videoUrl: string;
   feedback?: string;
+  trainerVideo?: string;
 };
 
 const Index = () => {
@@ -35,7 +28,8 @@ const Index = () => {
       date: "2024-02-20",
       description: "Working on basic sit and stay commands",
       videoUrl: "#",
-      feedback: "Great progress! Try holding the stay command for longer periods."
+      feedback: "Great progress! Try holding the stay command for longer periods.",
+      trainerVideo: "#"
     },
     {
       id: "2",
@@ -79,7 +73,6 @@ const Index = () => {
       return;
     }
 
-    // Add new training session to the list (in a real app, this would be handled by the backend)
     const newSession: TrainingSession = {
       id: (trainingSessions.length + 1).toString(),
       date: new Date().toISOString().split('T')[0],
@@ -167,37 +160,7 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Training Sessions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Trainer Feedback</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {trainingSessions.map((session) => (
-                    <TableRow key={session.id}>
-                      <TableCell>{session.date}</TableCell>
-                      <TableCell>{session.description}</TableCell>
-                      <TableCell>
-                        {session.feedback || (
-                          <span className="text-gray-500 italic">Pending review</span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+        <TrainingSessionsTable sessions={trainingSessions} />
       </div>
     </div>
   );
