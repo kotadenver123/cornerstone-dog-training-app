@@ -5,16 +5,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Video, Send } from "lucide-react";
 import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+// Mock data type for training sessions
+type TrainingSession = {
+  id: string;
+  date: string;
+  description: string;
+  videoUrl: string;
+  feedback?: string;
+};
 
 const Index = () => {
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
   const [description, setDescription] = useState("");
   const { toast } = useToast();
 
+  // Mock data for training sessions
+  const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>([
+    {
+      id: "1",
+      date: "2024-02-20",
+      description: "Working on basic sit and stay commands",
+      videoUrl: "#",
+      feedback: "Great progress! Try holding the stay command for longer periods."
+    },
+    {
+      id: "2",
+      date: "2024-02-19",
+      description: "Leash training practice",
+      videoUrl: "#"
+    }
+  ]);
+
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 100 * 1024 * 1024) { // 100MB limit for videos
+      if (file.size > 100 * 1024 * 1024) {
         toast({
           title: "File too large",
           description: "Please select a video under 100MB",
@@ -44,7 +78,17 @@ const Index = () => {
       });
       return;
     }
-    // Here you would typically upload the video and description to your backend
+
+    // Add new training session to the list (in a real app, this would be handled by the backend)
+    const newSession: TrainingSession = {
+      id: (trainingSessions.length + 1).toString(),
+      date: new Date().toISOString().split('T')[0],
+      description,
+      videoUrl: "#",
+    };
+
+    setTrainingSessions([newSession, ...trainingSessions]);
+
     toast({
       title: "Success!",
       description: "Your training session has been submitted for review",
@@ -55,7 +99,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-md mx-auto">
+      <div className="max-w-4xl mx-auto space-y-8">
         <Card>
           <CardHeader>
             <CardTitle className="text-center">Cornerstone Dog Training</CardTitle>
@@ -120,6 +164,38 @@ const Index = () => {
                 <Send className="mr-2 h-4 w-4" /> Submit for Review
               </Button>
             </form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Training Sessions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Trainer Feedback</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {trainingSessions.map((session) => (
+                    <TableRow key={session.id}>
+                      <TableCell>{session.date}</TableCell>
+                      <TableCell>{session.description}</TableCell>
+                      <TableCell>
+                        {session.feedback || (
+                          <span className="text-gray-500 italic">Pending review</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>
