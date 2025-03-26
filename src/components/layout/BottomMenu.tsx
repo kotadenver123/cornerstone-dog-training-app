@@ -1,5 +1,5 @@
 
-import { Home, Video } from "lucide-react";
+import { Home, Video, Users } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 export function BottomMenu() {
@@ -24,6 +24,13 @@ export function BottomMenu() {
       >
         <Video className="h-6 w-6" />
         <span className="text-xs mt-1">Training</span>
+      </Link>
+      <Link 
+        to="/group-training" 
+        className={`flex flex-col items-center p-2 ${isActive('/group-training') ? 'text-primary' : 'text-gray-500'}`}
+      >
+        <Users className="h-6 w-6" />
+        <span className="text-xs mt-1">Group</span>
       </Link>
     </div>
   );
