@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -111,13 +110,6 @@ const GroupTraining = () => {
     setSelectedLocations([]);
   };
 
-  // Calculate days to display in the week view
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(selectedDate);
-    date.setDate(date.getDate() - date.getDay() + i);
-    return date;
-  });
-  
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <div className="bg-white p-4 shadow-sm sticky top-0 z-10">
@@ -136,32 +128,33 @@ const GroupTraining = () => {
             resetFilters={resetFilters}
           />
         </div>
-        
-        <div className="overflow-x-auto">
-          <div className="flex min-w-max">
-            {weekDays.map((date, index) => (
-              <Button
-                key={index}
-                variant="ghost"
-                className={`flex-1 flex-col items-center justify-center p-2 min-w-16 ${
-                  format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
-                    ? 'bg-primary/10 text-primary'
-                    : ''
-                }`}
-                onClick={() => setSelectedDate(date)}
-              >
-                <div className="font-medium">{format(date, 'EEE')}</div>
-                <div className="text-xl font-bold">{format(date, 'd')}</div>
-                {format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd') && (
-                  <div className="h-1 w-1 bg-primary rounded-full mt-1"></div>
-                )}
-              </Button>
-            ))}
-          </div>
-        </div>
       </div>
       
-      <div className="p-4">
+      <div className="p-4 space-y-4">
+        <Card className="w-full bg-white shadow-md">
+          <CardContent className="p-4">
+            <Calendar 
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              className="w-full pointer-events-auto"
+              classNames={{
+                months: "w-full",
+                month: "w-full space-y-4",
+                caption: "flex justify-center pt-1 relative items-center text-xl",
+                caption_label: "text-lg font-semibold",
+                nav_button: "size-10",
+                table: "w-full",
+                head_cell: "text-base font-medium",
+                cell: "size-12 text-base",
+                day: "size-12 text-base hover:bg-primary/10",
+                day_selected: "bg-primary text-primary-foreground",
+                day_today: "border border-primary"
+              }}
+            />
+          </CardContent>
+        </Card>
+        
         <h2 className="text-lg font-medium mb-4">{format(selectedDate, 'EEE, MMM d')}</h2>
         
         <ClassList classes={classes} />
